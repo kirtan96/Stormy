@@ -5,17 +5,15 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ImageView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.kirtan.stormy.R;
 import com.kirtan.stormy.weather.Current;
 import com.kirtan.stormy.weather.Day;
@@ -43,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
     public static final String HOURLY_FORECAST = "HOURLY_FORECAST";
 
+    double longitude = 0;
+    double latitude = 0;
+    String city;
+
     public Forecast mForecast;
     @InjectView(R.id.temperatureLabel) TextView mTemperatureLabel;
     @InjectView(R.id.timeLabel) TextView mTimeLabel;
@@ -60,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
         toggleRefresh();
-        //37.4961670,-121.9256890
-        final double longitude = -121.9256890;
-        final double latitude = 37.4961670;
+        getLocation();
+        /*LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();*/
 
         refreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +79,30 @@ public class MainActivity extends AppCompatActivity {
 
         getForecast(latitude, longitude);
         Log.d(TAG, "Main UI code is running");
+    }
+
+
+
+    private void getLocation()
+    {
+        GPSTracker gpsTracker = new GPSTracker(this);
+
+        if (gpsTracker.getIsGPSTrackingEnabled())
+        {
+            latitude = gpsTracker.latitude;
+            longitude = gpsTracker.longitude;
+            String country = gpsTracker.getCountryName(this);
+            city = gpsTracker.getLocality(this);
+            String postalCode = gpsTracker.getPostalCode(this);
+            String addressLine = gpsTracker.getAddressLine(this);
+        }
+        else
+        {
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gpsTracker.showSettingsAlert();
+        }
     }
 
     private void getForecast(double latitude, double longitude) {
@@ -158,7 +184,8 @@ public class MainActivity extends AppCompatActivity {
         mSummaryLabel.setText(mCurrent.getSummary());
         Drawable drawable = getResources().getDrawable(mCurrent.getIconId());
         mIconImageView.setImageDrawable(drawable);
-        locationLabel.setText(mCurrent.getmTimeZone());
+        //locationLabel.setText(mCurrent.getmTimeZone());
+        locationLabel.setText(city);
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException
