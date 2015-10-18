@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     double longitude = 0;
     double latitude = 0;
-    String city;
+    static String city;
 
     public Forecast mForecast;
     @InjectView(R.id.temperatureLabel) TextView mTemperatureLabel;
