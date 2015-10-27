@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
     public static final String HOURLY_FORECAST = "HOURLY_FORECAST";
     int t = 0;
-    String degree = "";
+    String degree = "F";
     double longitude = 0;
     double latitude = 0;
     static String city;
@@ -206,7 +206,14 @@ public class MainActivity extends AppCompatActivity {
         c.setVisibility(View.VISIBLE);
         slash.setVisibility(View.VISIBLE);
         Current mCurrent = mForecast.getmCurrent();
-        mTemperatureLabel.setText("" + mCurrent.getmTemperature());
+        t = mCurrent.getmTemperature();
+        int x = t;
+        if(degree.equals("C"))
+        {
+            x = (int)((x-32)/1.8);
+
+        }
+        mTemperatureLabel.setText("" + x);
         mTimeLabel.setText("At " + mCurrent.getFormattedTime() + " it will be");
         mHumidityValue.setText("" + mCurrent.getmHumidity());
         mPrecipValue.setText(mCurrent.getmPercipChance() + "%");
@@ -215,11 +222,6 @@ public class MainActivity extends AppCompatActivity {
         mIconImageView.setImageDrawable(drawable);
         //locationLabel.setText(mCurrent.getmTimeZone());
         locationLabel.setText(city);
-        t = mCurrent.getmTemperature();
-        degree = "F";
-        f.setTextColor(Color.WHITE);
-        c.setTextColor(Color.DKGRAY);
-
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException

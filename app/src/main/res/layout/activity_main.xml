@@ -175,4 +175,39 @@
             android:layout_marginLeft="2dp" />
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="F"
+        android:id="@+id/fTextView"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/summaryLabel"
+        android:layout_toEndOf="@+id/summaryLabel"
+        android:textSize="34dp"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="/"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/fTextView"
+        android:layout_toEndOf="@+id/fTextView"
+        android:textSize="34dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="C"
+        android:id="@+id/cTextView"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView"
+        android:textSize="34dp"
+        android:textColor="@android:color/darker_gray" />
+
 </RelativeLayout>
