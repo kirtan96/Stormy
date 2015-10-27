@@ -1,7 +1,8 @@
 package com.kirtan.stormy.ui;
-
+//
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
     public static final String HOURLY_FORECAST = "HOURLY_FORECAST";
-
+    int t = 0;
+    String degree = "";
     double longitude = 0;
     double latitude = 0;
     static String city;
@@ -55,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
     @InjectView(R.id.locationLabel) TextView locationLabel;
     @InjectView(R.id.refreshImageView) ImageView refreshImageView;
     @InjectView(R.id.progressBar) ProgressBar progressBar;
+    @InjectView(R.id.fTextView) TextView f;
+    @InjectView(R.id.cTextView) TextView c;
+    @InjectView(R.id.textView) TextView slash;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +68,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-
+        f.setVisibility(View.INVISIBLE);
+        c.setVisibility(View.INVISIBLE);
+        slash.setVisibility(View.INVISIBLE);
         toggleRefresh();
         getLocation();
-        /*LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        longitude = location.getLongitude();
-        latitude = location.getLatitude();*/
+
 
         refreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +83,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getForecast(latitude, longitude);
+        f.setTextColor(Color.WHITE);
+        c.setTextColor(Color.DKGRAY);
+        f.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                f.setTextColor(Color.WHITE);
+                c.setTextColor(Color.DKGRAY);
+                degree = "F";
+                mTemperatureLabel.setText("" + t);
+            }
+        });
+        c.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                c.setTextColor(Color.WHITE);
+                f.setTextColor(Color.DKGRAY);
+                degree = "C";
+                int x = (int)((t-32)/1.8);
+                mTemperatureLabel.setText("" + x);
+            }
+        });
         Log.d(TAG, "Main UI code is running");
     }
 
@@ -176,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
+        f.setVisibility(View.VISIBLE);
+        c.setVisibility(View.VISIBLE);
+        slash.setVisibility(View.VISIBLE);
         Current mCurrent = mForecast.getmCurrent();
         mTemperatureLabel.setText("" + mCurrent.getmTemperature());
         mTimeLabel.setText("At " + mCurrent.getFormattedTime() + " it will be");
@@ -186,6 +215,11 @@ public class MainActivity extends AppCompatActivity {
         mIconImageView.setImageDrawable(drawable);
         //locationLabel.setText(mCurrent.getmTimeZone());
         locationLabel.setText(city);
+        t = mCurrent.getmTemperature();
+        degree = "F";
+        f.setTextColor(Color.WHITE);
+        c.setTextColor(Color.DKGRAY);
+
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException
@@ -277,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
     public void startDailyActivity(View view)
     {
         Intent intent = new Intent(this, DailyForecastActivity.class);
+        intent.putExtra("degree", degree);
         intent.putExtra(DAILY_FORECAST, mForecast.getmDailyForecast());
         startActivity(intent);
     }
@@ -285,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
     public void startHourlyActivity(View view)
     {
         Intent intent = new Intent(this, HourlyForecastActivity.class);
+        intent.putExtra("degree", degree);
         intent.putExtra(HOURLY_FORECAST, mForecast.getmHourlyForecast());
         startActivity(intent);
     }

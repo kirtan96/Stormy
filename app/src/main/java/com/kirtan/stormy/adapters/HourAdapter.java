@@ -1,16 +1,13 @@
 package com.kirtan.stormy.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kirtan.stormy.R;
-import com.kirtan.stormy.weather.Day;
 import com.kirtan.stormy.weather.Hour;
 
 /**
@@ -20,8 +17,10 @@ public class HourAdapter extends RecyclerView.Adapter<HourAdapter.HourViewHolder
 
     private Hour[] mHours;
 
-    public HourAdapter(Hour[] hours){
+    String x;
+    public HourAdapter(Hour[] hours, String s){
         mHours = hours;
+        x = s;
     }
 
     @Override
@@ -59,7 +58,12 @@ public class HourAdapter extends RecyclerView.Adapter<HourAdapter.HourViewHolder
         public void bindHour(Hour hour){
             mTimeLabel.setText(hour.getHour());
             mSummaryLabel.setText(hour.getmSummary());
-            mTemperatureLabel.setText(hour.getmTemperature() + "");
+            int d = hour.getmTemperature();
+            if(x.equals("C"))
+            {
+                d = (int)((d-32)/1.8);//
+            }
+            mTemperatureLabel.setText(d + "");
             mIconImageview.setImageResource(hour.getIconId());
         }
     }

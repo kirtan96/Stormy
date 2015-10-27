@@ -17,11 +17,13 @@ import com.kirtan.stormy.weather.Day;
 public class DayAdapter extends BaseAdapter {
     private Context mContext;
     private Day[] mDays;
+    String s = "";
 
-    public DayAdapter(Context context, Day[] days)
+    public DayAdapter(Context context, Day[] days, String x)
     {
         mContext = context;
         mDays = days;
+        s = x;
     }
 
     @Override
@@ -59,7 +61,12 @@ public class DayAdapter extends BaseAdapter {
 
         Day day = mDays[position];
         holder.iconImageview.setImageResource(day.getIconId());
-        holder.temperatureLabel.setText(day.getmTemperatureMax() + "");
+        int d = day.getmTemperatureMax();
+        if(s.equals("C"))
+        {
+            d = (int)((d-32)/1.8);//
+        }
+        holder.temperatureLabel.setText(d + "");
         if(position == 0)
         {
             holder.dayLabel.setText("Today");
